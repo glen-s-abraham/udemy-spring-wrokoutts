@@ -2,6 +2,8 @@ package com.glen.BlogPostSpringBoot.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +22,7 @@ import com.glen.BlogPostSpringBoot.payload.PostResponse;
 import com.glen.BlogPostSpringBoot.service.PostService;
 import com.glen.BlogPostSpringBoot.utils.AppConstants;
 
-import net.bytebuddy.implementation.bytecode.constant.DefaultValue;
+
 
 @RestController
 @RequestMapping("/api/posts")
@@ -34,7 +36,7 @@ public class PostController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<PostDTO> createPost(@RequestBody PostDTO post){
+	public ResponseEntity<PostDTO> createPost(@Valid @RequestBody PostDTO post){
 		return new ResponseEntity<>(postService.createPost(post),HttpStatus.CREATED);
 	}
 	
@@ -56,7 +58,7 @@ public class PostController {
 	@PutMapping("/{id}")
 	public ResponseEntity<PostDTO> updatePostById(
 			@PathVariable Long id,
-			@RequestBody PostDTO postDto
+			@Valid @RequestBody PostDTO postDto
 	){
 		return new ResponseEntity<>(postService.updatePostById(id,postDto),
 				HttpStatus.OK);

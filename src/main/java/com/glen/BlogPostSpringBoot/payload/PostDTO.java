@@ -2,6 +2,9 @@ package com.glen.BlogPostSpringBoot.payload;
 
 import java.util.Set;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+
 import com.glen.BlogPostSpringBoot.entity.Comment;
 
 import lombok.Data;
@@ -11,7 +14,13 @@ import lombok.Setter;
 
 public class PostDTO {
 	private Long id;
+	
+	@NotEmpty
+	@Size(min = 2, message = "title should be of atleast 2 characters")
 	private String title;
+	
+	@NotEmpty
+	@Size(min=10,message ="body of the post should be of atleast 10 characters")
 	private String body;
 	private Set<Comment> comments;
 	

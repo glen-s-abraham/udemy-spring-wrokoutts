@@ -2,6 +2,8 @@ package com.glen.BlogPostSpringBoot.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +35,7 @@ public class CommentController {
 	@PostMapping
 	public ResponseEntity<CommentDTO> createPost(
 			@PathVariable("postId")Long postId,
-			@RequestBody CommentDTO commentDto
+			@Valid @RequestBody CommentDTO commentDto
 	)
 	{
 		return new ResponseEntity<>(
@@ -60,7 +62,7 @@ public class CommentController {
 	public ResponseEntity<CommentDTO> updateCommentOnPostById(
 			@PathVariable("postId")Long postId,
 			@PathVariable("commentId")Long commentId,
-			@RequestBody CommentDTO commentDto
+			@Valid @RequestBody CommentDTO commentDto
 	){
 		return new ResponseEntity<>(
 				commentService.updateCommentById(postId,commentId,commentDto),
