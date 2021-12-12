@@ -7,6 +7,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,7 +35,8 @@ public class CommentController {
 	
 
 	@PostMapping
-	public ResponseEntity<CommentDTO> createPost(
+	@Secured("USER")
+	public ResponseEntity<CommentDTO> createComment(
 			@PathVariable("postId")Long postId,
 			@Valid @RequestBody CommentDTO commentDto
 	)
@@ -59,6 +62,7 @@ public class CommentController {
 	}
 	
 	@PutMapping("/{commentId}")
+	@Secured("USER")
 	public ResponseEntity<CommentDTO> updateCommentOnPostById(
 			@PathVariable("postId")Long postId,
 			@PathVariable("commentId")Long commentId,
@@ -71,6 +75,7 @@ public class CommentController {
 	}
 	
 	@DeleteMapping("/{commentId}")
+	@Secured("USER")
 	public ResponseEntity<String> deleteCommentOnPostById(
 			@PathVariable("postId")Long postId,
 			@PathVariable("commentId")Long commentId
