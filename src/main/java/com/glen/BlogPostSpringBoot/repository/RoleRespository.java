@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import com.glen.BlogPostSpringBoot.entity.Role;
 
 @Repository
-public interface RoleRespositoryInterface extends JpaRepository<Role, Long>{
+public interface RoleRespository extends JpaRepository<Role, Long>{
 	Optional<Role> findByName(String name);
 }
