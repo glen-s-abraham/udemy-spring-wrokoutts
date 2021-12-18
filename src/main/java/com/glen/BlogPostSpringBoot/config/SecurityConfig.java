@@ -10,14 +10,18 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.glen.BlogPostSpringBoot.security.CustomUserDetailsService;
+import com.glen.BlogPostSpringBoot.security.JWTAuthenticationEntryPoint;
+import com.glen.BlogPostSpringBoot.security.JwtAuthFilter;
 
 
 @Configuration
@@ -25,25 +29,47 @@ import com.glen.BlogPostSpringBoot.security.CustomUserDetailsService;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
-	@Autowired
-    private CustomUserDetailsService userDetailsService;
 	
+    private CustomUserDetailsService userDetailsService;
+	private JWTAuthenticationEntryPoint authenticationEntryPoint;
+	
+	
+	@Autowired
+	public SecurityConfig(CustomUserDetailsService userDetailsService,
+			JWTAuthenticationEntryPoint authenticationEntryPoint) {
+		this.userDetailsService = userDetailsService;
+		this.authenticationEntryPoint = authenticationEntryPoint;
+	}
+
+
+
 	@Bean
 	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 	
-	
+	@Bean
+	public JwtAuthFilter authFilter() {
+		return new JwtAuthFilter();
+	}
 	
 	protected void configure(HttpSecurity http) throws Exception{
 		http
 		.csrf().disable()
+		.exceptionHandling()
+		.authenticationEntryPoint(authenticationEntryPoint)
+		.and()
+		.sessionManagement()
+		.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+		.and()
 		.authorizeRequests()
 		.antMatchers(HttpMethod.GET,"/api/**").permitAll()
+		.antMatchers("/api/auth/**").permitAll()
 		.anyRequest()
-		.authenticated()
-		.and()
-		.httpBasic();
+		.authenticated();
+		
+		http.addFilterBefore(authFilter(), UsernamePasswordAuthenticationFilter.class);
+	
 	}
 	
 	@Override
